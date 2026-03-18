@@ -1,0 +1,3 @@
+# Use .gitattributes to ignore the web/ directory in GitHub's language statistics
+# This will make Go appear as the primary language.
+web/**/* linguist-vendored
