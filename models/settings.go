@@ -1,9 +1,7 @@
 package models
 
-import (
-	"errors"
-	"gorm.io/gorm"
-)
+// No imports needed for this file as it uses types from the same package and builtin errors.
+
 
 type Settings struct {
 	IDModel

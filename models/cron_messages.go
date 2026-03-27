@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"message-nest/pkg/util"
