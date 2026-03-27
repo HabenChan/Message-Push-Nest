@@ -21,7 +21,7 @@ func GenerateTaskUniqueID() string {
 // AddSendTaskWithID 添加实例的时候添加任务
 func AddSendTaskWithID(name string, id string, createdBy string) error {
 	var etask SendTasks
-	db.Where("id = ?", id).Take(&etask)
+	db.Where("id = ?", id).Limit(1).Find(&etask)
 	if len(etask.ID) > 0 {
 		return nil
 	}
@@ -117,8 +117,8 @@ func GetTasksIns(id string) (TaskIns, error) {
 		taskIns    []SendTasksInsRes
 		taskResult TaskIns
 	)
-	err := db.Where("id = ?", id).First(&task).Error
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	err := db.Where("id = ?", id).Limit(1).Find(&task).Error
+	if err != nil {
 		return taskResult, err
 	}
 
@@ -179,9 +179,12 @@ func EditSendTask(id string, data map[string]interface{}) error {
 
 func GetTaskByID(id string) (SendTasks, error) {
 	var task SendTasks
-	err := db.Where("id = ? ", id).Take(&task).Error
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	err := db.Where("id = ? ", id).Limit(1).Find(&task).Error
+	if err != nil {
 		return task, err
+	}
+	if task.ID == "" {
+		return task, gorm.ErrRecordNotFound
 	}
 	return task, nil
 }

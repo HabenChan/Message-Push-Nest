@@ -110,9 +110,12 @@ func EditCronMsg(id string, data interface{}) error {
 
 func GetCronMsgByID(id string) (CronMessages, error) {
 	var msg CronMessages
-	err := db.Where("id = ? ", id).Take(&msg).Error
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	err := db.Where("id = ? ", id).Limit(1).Find(&msg).Error
+	if err != nil {
 		return msg, err
+	}
+	if msg.ID == "" {
+		return msg, gorm.ErrRecordNotFound
 	}
 	return msg, nil
 }

@@ -76,8 +76,9 @@ func ManyAddTaskIns(taskIns []SendTasksIns) error {
 	tx := db.Begin()
 	for _, ins := range taskIns {
 		// 存在就跳过这条ins记录
-		err := db.Where("id = ?", ins.ID).Take(&SendTasksIns{}).Error
-		if err == nil {
+		var existing SendTasksIns
+		err := db.Select("id").Where("id = ?", ins.ID).Limit(1).Find(&existing).Error
+		if err == nil && existing.ID != "" {
 			continue
 		}
 		if err := tx.Create(&ins).Error; err != nil {

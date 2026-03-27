@@ -85,9 +85,12 @@ func GetSendWaysTotal(name string, type_ string, maps interface{}) (int64, error
 
 func GetWayByID(id string) (SendWays, error) {
 	var way SendWays
-	err := db.Where("id = ? ", id).Take(&way).Error
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	err := db.Where("id = ? ", id).Limit(1).Find(&way).Error
+	if err != nil {
 		return way, err
+	}
+	if way.ID == "" {
+		return way, gorm.ErrRecordNotFound
 	}
 	return way, nil
 }

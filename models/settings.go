@@ -40,8 +40,8 @@ func DeleteSettingByKey(section string, key string) error {
 
 func GetSettingByKey(section string, key string) (Settings, error) {
 	var setting Settings
-	err := db.Where("`section` = ? and `key` = ? ", section, key).Find(&setting).Error
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	err := db.Where("`section` = ? and `key` = ? ", section, key).Limit(1).Find(&setting).Error
+	if err != nil {
 		return setting, err
 	}
 	return setting, nil
@@ -50,7 +50,7 @@ func GetSettingByKey(section string, key string) (Settings, error) {
 func GetSettingBySection(section string) ([]Settings, error) {
 	var settings []Settings
 	err := db.Table(GetSchema(Settings{})).Where("`section` = ? ", section).Scan(&settings).Error
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil {
 		return settings, err
 	}
 	return settings, nil

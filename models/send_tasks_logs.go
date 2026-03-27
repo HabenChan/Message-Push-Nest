@@ -165,10 +165,10 @@ func DeleteOutDateLogs(keepNum int) (int, error) {
 		Order("created_on DESC").
 		Offset(keepNum - 1).
 		Limit(1).
-		First(&threshold)
+		Find(&threshold)
 
 	// 如果记录总数不足keepNum条，则不需要删除
-	if result.Error != nil {
+	if result.Error != nil || threshold.ID == 0 {
 		return 0, nil
 	}
 
@@ -245,15 +245,15 @@ func GetStatisticData() (StatisticData, error) {
 	SUM(CASE WHEN status != 1 or status is null THEN 1 ELSE 0 END) AS today_failed_num`).
 		Where("DATE(created_on) = ?", currDay)
 
-	query.Take(&statistic)
+	query.Scan(&statistic)
 
 	// 	全部消息统计数据
 	totalQuery := db.Table(logt).Select(`COUNT(*) AS message_total_num`)
-	totalQuery.Take(&statistic)
+	totalQuery.Scan(&statistic)
 
 	// 	托管消息统计数据
 	hostedMessageTotalQuery := db.Table(hostedt).Select(`COUNT(*) AS hosted_message_total_num`)
-	hostedMessageTotalQuery.Take(&statistic)
+	hostedMessageTotalQuery.Scan(&statistic)
 
 	// 最近30天数据
 	days := 30
@@ -304,15 +304,15 @@ func GetBasicStatisticData() (BasicStatisticData, error) {
 	SUM(CASE WHEN status != 1 or status is null THEN 1 ELSE 0 END) AS today_failed_num`).
 		Where("DATE(created_on) = ?", currDay)
 
-	query.Take(&statistic)
+	query.Scan(&statistic)
 
 	// 全部消息统计数据
 	totalQuery := db.Table(logt).Select(`COUNT(*) AS message_total_num`)
-	totalQuery.Take(&statistic)
+	totalQuery.Scan(&statistic)
 
 	// 托管消息统计数据
 	hostedMessageTotalQuery := db.Table(hostedt).Select(`COUNT(*) AS hosted_message_total_num`)
-	hostedMessageTotalQuery.Take(&statistic)
+	hostedMessageTotalQuery.Scan(&statistic)
 
 	return statistic, nil
 }

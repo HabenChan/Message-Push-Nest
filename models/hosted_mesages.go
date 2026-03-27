@@ -92,10 +92,10 @@ func DeleteOutDateHostedMessages(keepNum int) (int, error) {
 		Order("created_on DESC").
 		Offset(keepNum - 1).
 		Limit(1).
-		First(&threshold)
+		Find(&threshold)
 	
-	// 如果记录总数不足keepNum条，则不需要删除
-	if result.Error != nil {
+	// 如果记录总数不足keepNum条，或者查找失败，则不需要删除
+	if result.Error != nil || threshold.ID == 0 {
 		return 0, nil
 	}
 	

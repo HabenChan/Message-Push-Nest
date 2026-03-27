@@ -129,9 +129,12 @@ func GetTemplateByID(id string) (*TemplateResult, error) {
 	var data TemplateResult
 	templateT := GetSchema(Template{})
 	
-	err := db.Table(templateT).Where("id = ?", id).First(&data).Error
+	err := db.Table(templateT).Where("id = ?", id).Limit(1).Find(&data).Error
 	if err != nil {
 		return nil, err
+	}
+	if data.ID == "" {
+		return nil, gorm.ErrRecordNotFound
 	}
 	
 	return &data, nil
@@ -140,7 +143,7 @@ func GetTemplateByID(id string) (*TemplateResult, error) {
 // ExistTemplateByID 检查模板是否存在
 func ExistTemplateByID(id string) (bool, error) {
 	var template Template
-	err := db.Select("id").Where("id = ?", id).First(&template).Error
+	err := db.Select("id").Where("id = ?", id).Limit(1).Find(&template).Error
 	if err != nil {
 		return false, err
 	}

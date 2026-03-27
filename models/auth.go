@@ -14,8 +14,8 @@ type Auth struct {
 // CheckAuth 检查用户信息
 func CheckAuth(username, password string) (bool, error) {
 	var auth Auth
-	err := db.Select("id").Where(Auth{Username: username, Password: password}).First(&auth).Error
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	err := db.Select("id").Where(Auth{Username: username, Password: password}).Limit(1).Find(&auth).Error
+	if err != nil {
 		return false, err
 	}
 
@@ -28,10 +28,13 @@ func CheckAuth(username, password string) (bool, error) {
 
 func GetUserByUsername(username string) (*Auth, error) {
     var auth Auth
-    err := db.Where("username = ?", username).First(&auth).Error
+    err := db.Where("username = ?", username).Limit(1).Find(&auth).Error
     if err != nil {
         return nil, err
     }
+	if auth.ID == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
     return &auth, nil
 }
 
