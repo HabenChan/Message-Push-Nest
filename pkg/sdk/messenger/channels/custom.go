@@ -10,6 +10,7 @@ func NewCustomChannel() Channel {
 
 func (c *CustomChannel) Send(config ChannelConfig, msg *Message) (*Result, error) {
 	webhook := config.GetString("webhook")
+	header := config.GetString("header")
 	body := config.GetString("body")
 
 	if webhook == "" {
@@ -27,7 +28,9 @@ func (c *CustomChannel) Send(config ChannelConfig, msg *Message) (*Result, error
 		bodyStr = formattedContent
 	}
 
-	res, err := cli.Request(webhook, bodyStr)
+	headers := cli.ParseHeaders(header)
+
+	res, err := cli.Request(webhook, bodyStr, headers)
 	if err != nil {
 		return ErrorResult(string(res), err), nil
 	}

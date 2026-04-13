@@ -42,7 +42,11 @@ func (c *CustomChannel) SendUnified(msgObj interface{}, ins models.SendTasksIns,
 	data, _ := json.Marshal(formattedContent)
 	dataStr := strings.Trim(string(data), "\"")
 	bodyStr := strings.Replace(auth.Body, "TEXT", dataStr, -1)
-	res, err := cli.Request(auth.Webhook, bodyStr)
+
+	// 解析 Header
+	headers := cli.ParseHeaders(auth.Header)
+
+	res, err := cli.Request(auth.Webhook, bodyStr, headers)
 	var errMsg string
 	if err != nil {
 		errMsg = fmt.Sprintf("发送失败：%s", err.Error())

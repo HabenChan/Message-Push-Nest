@@ -100,6 +100,7 @@ const CONSTANT = {
             label: '自定义推送',
             inputs: [
                 { subLabel: 'webhook地址', value: '', col: 'webhook', desc: "自定义webhook地址" },
+                { subLabel: '请求头', value: '', col: 'header', desc: "自定义请求头\n例如：Authorization: Bearer 4rt...\nContent-Type: application/json", isTextArea: true },
                 { subLabel: '请求体', value: '', col: 'body', desc: "text内容请使用 TEXT 进行占位\n例如：{\"message\": \"TEXT\", \"foo\": \"bar\"}", isTextArea: true },
                 { subLabel: '渠道名', value: '', col: 'name', desc: "想要设置的渠道名字" },
             ],

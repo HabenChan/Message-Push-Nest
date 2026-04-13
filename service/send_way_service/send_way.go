@@ -184,6 +184,7 @@ func (w *WayDetailFeishu) Test() (string, string) {
 // WayDetailCustom 自定义渠道
 type WayDetailCustom struct {
 	Webhook string `json:"webhook" validate:"required,max=200" label:"自定义的webhook地址"`
+	Header  string `json:"header" validate:"max=2000" label:"自定义的请求头"`
 	Body    string `json:"body" validate:"max=2000" label:"自定义的请求体"`
 }
 
